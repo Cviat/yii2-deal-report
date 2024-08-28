@@ -13,7 +13,8 @@ WORKDIR /var/www/html
 COPY . .
 
 
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader --verbose
+
 
 
 EXPOSE 80
