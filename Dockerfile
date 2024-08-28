@@ -15,9 +15,7 @@ COPY . .
 
 RUN composer install
 
-
-
-
+RUN composer install --no-interaction
 
 EXPOSE 80
 
