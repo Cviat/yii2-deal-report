@@ -13,9 +13,8 @@ WORKDIR /var/www/html
 COPY . .
 
 
-RUN composer install
 
-RUN composer install --no-interaction --prefer-dist --no-dev
+
 
 EXPOSE 80
 
