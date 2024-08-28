@@ -12,6 +12,17 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        'i18n' => [
+            'translations' => [
+                'yii/bootstrap5' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@vendor/yiisoft/yii2-bootstrap5/src/messages',
+                    'fileMap' => [
+                        'yii/bootstrap5' => 'bootstrap5.php',
+                    ],
+                ],
+            ],
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'zJYH8NzVzrc28_e-_n3MEmqeHaI6cPha',
