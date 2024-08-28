@@ -13,10 +13,7 @@ WORKDIR /var/www/html
 COPY . .
 
 
-
-
-
 EXPOSE 80
 
 
-CMD ["php-fpm"]
+CMD ["php", "-S", "0.0.0.0:80", "-t", "web/"]
