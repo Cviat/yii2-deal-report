@@ -16,7 +16,7 @@ COPY . .
 RUN composer install
 
 
-COPY php.ini /usr/local/etc/php/
+
 
 
 EXPOSE 80
