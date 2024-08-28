@@ -50,6 +50,23 @@ $config = [
             ],
         ],
 
+        'assetManager' => [
+            'bundles' => [
+                'yii\web\YiiAsset' => [
+                    'js' => [
+                        // удалите строки ниже, если используете Bootstrap 5
+                    ],
+                ],
+                'yii\bootstrap5\BootstrapAsset' => [
+                    'css' => [
+                        'https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css',
+                    ],
+                    'js' => [
+                        'https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js',
+                    ],
+                ],
+            ],
+        ],
     ],
     'params' => $params,
 ];
