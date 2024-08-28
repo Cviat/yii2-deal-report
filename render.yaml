@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: yii2-app
+    env: docker
+    dockerfile: Dockerfile
+    buildCommand: "composer install"
+    startCommand: "php yii serve --host=0.0.0.0"
+    ports:
+      - 80
+    autoDeploy: true
+    branch: main
