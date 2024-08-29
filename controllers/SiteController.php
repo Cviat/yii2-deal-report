@@ -94,44 +94,75 @@ class SiteController extends Controller
      * @param string $filePath
      * @return array
      */
-    private function parseHtml($filePath)
+    function parseHtml($filePath)
     {
         $data = [];
         $dom = new \DOMDocument;
         @$dom->loadHTMLFile($filePath);
         $rows = $dom->getElementsByTagName('tr');
 
+        $isInsideTable = false;
         foreach ($rows as $row) {
             $cells = $row->getElementsByTagName('td');
 
-            if ($cells->length > 0) {
-                $transactionType = null;
-                $lastValue = null;
+            // Проверяем начало таблицы
+            if ($cells->length == 14 && strpos($row->textContent, 'Close Time') !== false) {
+                $isInsideTable = true;
+                continue;
+            }
 
-                foreach ($cells as $cell) {
-                    $cellValue = trim($cell->nodeValue);
+            // Проверяем конец таблицы
+            if ($cells->length == 14 && strpos($row->textContent, 'Close Time') === false && strpos($row->textContent, 'Open Time') !== false) {
+                $isInsideTable = false;
+                continue;
+            }
 
-                    // Определяем тип транзакции (buy или balance)
-                    if ($cellValue === 'buy' || $cellValue === 'balance') { //  меня очень сильно смущает что balance
-                        $transactionType = $cellValue;
-                    }
+            // Если находимся внутри таблицы, обрабатываем строки
+            if ($isInsideTable && $cells->length >= 5) {
+                // Проверка на наличие лишних строк
+                $firstCellContent = trim($cells->item(0)->nodeValue);
+                $hasColspan = $cells->item(0)->hasAttribute('colspan');
 
-                    // Ищем последнее числовое значение
-                    $numericValue = str_replace([' ', ','], ['', '.'], $cellValue);
-                    if (is_numeric($numericValue)) {
-                        $lastValue = (float)$numericValue;
+                // Исключаем строки с colspan и пустым значением
+                if ($hasColspan && $firstCellContent === '&nbsp;') {
+                    continue;
+                }
+
+                // Исключаем строки, которые имеют только пустые или ненужные данные
+                $isRowEmpty = true;
+                for ($i = 0; $i < $cells->length; $i++) {
+                    $cellContent = trim($cells->item($i)->nodeValue);
+                    if (!empty($cellContent) && $cellContent !== '&nbsp;' && is_numeric(str_replace([' ', ','], ['', '.'], $cellContent))) {
+                        $isRowEmpty = false;
+                        break;
                     }
                 }
 
-                // Если нашли тип транзакции и последнее значение, добавляем в массив данных
-                if ($transactionType !== null && $lastValue !== null) {
-                    $data[] = $lastValue;
+                if ($isRowEmpty) {
+                    continue;
+                }
+
+                // Проверка содержимого последней ячейки
+                $lastCellValue = trim($cells->item($cells->length - 1)->nodeValue);
+                $numericValue = str_replace([' ', ','], ['', '.'], $lastCellValue);
+
+                // Убедимся, что значение числовое
+                if (is_numeric($numericValue)) {
+                    $data[] = (float)$numericValue;
                 }
             }
         }
 
+        // Удаляем последнее значение, если нужно
+        array_pop($data);
+
         return $data;
     }
+
+
+
+
+
 
 
 
